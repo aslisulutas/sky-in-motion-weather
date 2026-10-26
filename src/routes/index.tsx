@@ -15,6 +15,13 @@ const forecastQuery = (lat: number, lon: number) =>
   });
 
 export const Route = createFileRoute("/")({
+  // Weather is fetched in the browser: Open-Meteo rejects requests from the hosting servers.
+  ssr: false,
+  pendingComponent: () => (
+    <div className="sky-clear flex min-h-screen items-center justify-center text-on-sky">
+      <div className="bob text-6xl">⛅</div>
+    </div>
+  ),
   validateSearch: (s: Record<string, unknown>): Search => ({
     lat: Number(s["lat"]) || undefined,
     lon: Number(s["lon"]) || undefined,
