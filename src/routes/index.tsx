@@ -16,9 +16,9 @@ const forecastQuery = (lat: number, lon: number) =>
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    lat: Number(s.lat) || 41.0082,
-    lon: Number(s.lon) || 28.9784,
-    name: typeof s.name === "string" && s.name ? s.name : "İstanbul",
+    lat: Number(s["lat"]) || 41.0082,
+    lon: Number(s["lon"]) || 28.9784,
+    name: typeof s["name"] === "string" && s["name"] ? s["name"] : "İstanbul",
   }),
   loaderDeps: ({ search }) => ({ lat: search.lat, lon: search.lon }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(forecastQuery(deps.lat, deps.lon)),
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   errorComponent: ({ error }) => (
     <div className="sky-cloudy flex min-h-screen items-center justify-center p-6 text-on-sky">
-      <div className="toy-card p-8 text-center text-xl">☁️ {error.message}</div>
+      <div className="toy-card p-8 text-center text-xl">☁️ {error instanceof Error ? error.message : "Bir hata oluştu"}</div>
     </div>
   ),
   notFoundComponent: () => <div className="p-8">Bulunamadı</div>,
