@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, ClientOnly } from "@tanstack/react-router";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { describe, fetchForecast, searchPlaces } from "@/lib/weather";
 
 const WeatherScene = lazy(() => import("@/components/WeatherScene"));
@@ -45,7 +45,22 @@ const dayName = (d: string, i: number) =>
   i === 0 ? "Bugün" : new Date(d + "T12:00").toLocaleDateString("tr-TR", { weekday: "long" });
 
 function Index() {
-  const { lat = 41.0082, lon = 28.9784, name = "İstanbul" } = Route.useSearch();
+  const search = Route.useSearch();
+  const { lat = 41.0082, lon = 28.9784, name = "İstanbul" } = search;
+  const navigate = useNavigate({ from: "/" });
+  useEffect(() => {
+    if (search.lat !== undefined || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (p) =>
+        navigate({
+          search: { lat: +p.coords.latitude.toFixed(3), lon: +p.coords.longitude.toFixed(3), name: "Konumum" },
+          replace: true,
+        }),
+      () => {},
+      { timeout: 8000 },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const { data } = useSuspenseQuery(forecastQuery(lat, lon));
   const info = describe(data.current.code);
   const isDay = data.current.isDay;
