@@ -5,7 +5,7 @@ import { describe, fetchForecast, searchPlaces } from "@/lib/weather";
 
 const WeatherScene = lazy(() => import("@/components/WeatherScene"));
 
-type Search = { lat: number; lon: number; name: string };
+type Search = { lat?: number; lon?: number; name?: string };
 
 const forecastQuery = (lat: number, lon: number) =>
   queryOptions({
@@ -16,11 +16,11 @@ const forecastQuery = (lat: number, lon: number) =>
 
 export const Route = createFileRoute("/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    lat: Number(s["lat"]) || 41.0082,
-    lon: Number(s["lon"]) || 28.9784,
-    name: typeof s["name"] === "string" && s["name"] ? s["name"] : "İstanbul",
+    lat: Number(s["lat"]) || undefined,
+    lon: Number(s["lon"]) || undefined,
+    name: typeof s["name"] === "string" && s["name"] ? s["name"] : undefined,
   }),
-  loaderDeps: ({ search }) => ({ lat: search.lat, lon: search.lon }),
+  loaderDeps: ({ search }) => ({ lat: search.lat ?? 41.0082, lon: search.lon ?? 28.9784 }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(forecastQuery(deps.lat, deps.lon)),
   head: () => ({
     meta: [
@@ -45,7 +45,7 @@ const dayName = (d: string, i: number) =>
   i === 0 ? "Bugün" : new Date(d + "T12:00").toLocaleDateString("tr-TR", { weekday: "long" });
 
 function Index() {
-  const { lat, lon, name } = Route.useSearch();
+  const { lat = 41.0082, lon = 28.9784, name = "İstanbul" } = Route.useSearch();
   const { data } = useSuspenseQuery(forecastQuery(lat, lon));
   const info = describe(data.current.code);
   const isDay = data.current.isDay;

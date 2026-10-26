@@ -46,7 +46,7 @@ function Moon() {
           <sphereGeometry args={[1, 48, 48]} />
           <meshStandardMaterial color="#f4f1de" emissive="#d9d4b8" emissiveIntensity={0.5} roughness={0.9} />
         </mesh>
-        {[[0.3, 0.3], [-0.35, -0.1], [0.1, -0.45]].map(([x, y], i) => (
+        {([[0.3, 0.3], [-0.35, -0.1], [0.1, -0.45]] as [number, number][]).map(([x, y], i) => (
           <mesh key={i} position={[x, y, 0.88]}>
             <sphereGeometry args={[0.15, 16, 16]} />
             <meshStandardMaterial color="#d8d3b5" />
