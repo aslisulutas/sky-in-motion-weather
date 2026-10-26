@@ -5,7 +5,7 @@ import { describe, fetchForecast, searchPlaces } from "@/lib/weather";
 
 const WeatherScene = lazy(() => import("@/components/WeatherScene"));
 
-type Search = { lat?: number; lon?: number; name?: string };
+type Search = { lat?: number | undefined; lon?: number | undefined; name?: string | undefined };
 
 const forecastQuery = (lat: number, lon: number) =>
   queryOptions({
