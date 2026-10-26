@@ -73,7 +73,7 @@ function Cloud({ position, scale = 1, color, speed = 0.3 }: { position: [number,
         {puffs.map(([x, y, z, r], i) => (
           <mesh key={i} position={[x, y, z]}>
             <sphereGeometry args={[r, 32, 32]} />
-            <meshStandardMaterial color={color} roughness={0.95} />
+            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.25} roughness={0.9} />
           </mesh>
         ))}
       </Float>
